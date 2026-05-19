@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --campana-azul: #1e3070;
+  --campana-azul-med: #2a4094;
+  --campana-rojo: #d42b2b;
+  --campana-fondo: #f4f6fb;
+  --campana-texto: #1e2a3a;
+}
+
+body {
+  color: var(--campana-texto);
+  background: var(--campana-fondo);
+  font-family: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}

@@ -1,0 +1,53 @@
+PLATAFORMA DE CAMPAÑA — CÓMO EMPEZAR (sin saber programar)
+============================================================
+
+1) ABRIR EL PANEL EN TU PC
+   - Entrá a la carpeta "campana-mvp"
+   - Doble clic en: iniciar-panel.bat
+   - Si se cierra solo: usá iniciar-panel-rapido.bat
+   - La ventana negra debe QUEDAR ABIERTA (no aprietes teclas salvo al final)
+   - Se abre el navegador en http://localhost:3000
+
+2) CONECTAR WHATSAPP (META)
+   - Doble clic en: configurar-whatsapp.bat
+   - Se abre un archivo de texto (.env). Completá:
+       WHATSAPP_ACCESS_TOKEN=   (token de Meta, una sola línea)
+       WHATSAPP_PHONE_NUMBER_ID= (número que muestra Meta)
+       WHATSAPP_VERIFY_TOKEN=    (una frase que inventás vos)
+   - Guardá y cerrá el Bloc de notas
+   - Volvé a ejecutar iniciar-panel.bat
+
+3) PROBAR EN EL PANEL
+   - Menú "Configuración" → botón "Probar conexión con Meta"
+   - Menú "Envíos" → plantilla hello_world, idioma en_US
+   - Solo llegan mensajes a números que Meta tenga como "destinatarios de prueba"
+
+4) CONTRASEÑA DEL PANEL (recomendado)
+   - En el mismo .env agregá: PANEL_PASSWORD=la_clave_que_quieras
+   - Reiniciá iniciar-panel.bat
+   - Al entrar te pedirá la contraseña
+
+5) CARGA PÚBLICA (referentes barriales)
+   - NO compartas http://localhost:3000/cargar (solo abre en TU PC)
+   - Panel → Carga pública → copiá el enlace VERDE (empieza con http://192.168...)
+   - El celular del referente debe estar en la MISMA Wi-Fi que la PC con el panel abierto
+   - Si están en otra red o 4G, hace falta ngrok o un servidor en internet (más adelante)
+   - Primero cargá referentes en Panel → Referentes
+   - Los referentes completan nombre, apellido, teléfono y barrio (sin entrar al panel)
+   - Teléfonos duplicados se rechazan automáticamente
+
+6) SONDEOS (respuestas que la gente escribe)
+   - Menú "Sondeos" → crear uno → Activar
+   - Necesitás el webhook en Meta apuntando a tu servidor
+   - En la PC local suele usarse ngrok (ver Configuración en el panel)
+
+¿Problemas?
+   - Si dice "Falta configurar .env", revisá el paso 2
+   - Si el token falla o dice "Session has expired", generá uno NUEVO en Meta
+     (API Setup → Generar token) y pegalo en .env; reiniciá iniciar-panel.bat
+   - Si el token falla, copialo de nuevo sin saltos de línea (una sola línea)
+   - Cerrá la ventana negra del panel antes de instalar cosas nuevas
+   - Si el panel pide contraseña: está en PANEL_PASSWORD del .env (opcional)
+
+Ruta de esta carpeta en tu disco:
+   D:\Documents\Prueba de Cursor\campana-mvp

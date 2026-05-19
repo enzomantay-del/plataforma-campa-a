@@ -1,0 +1,23 @@
+/** Barrios de Jardín América (Misiones) — editá esta lista según la campaña. */
+export const BARRIOS_JARDIN_AMERICA = [
+  "Centro",
+  "Barrio Sur",
+  "Barrio Norte",
+  "Barrio Oeste",
+  "Barrio Este",
+  "Villa Lanús",
+  "Villa Urquiza",
+  "San Martín",
+  "Evita",
+  "MITA",
+  "El Progreso",
+  "La Esperanza",
+  "Los Pinos",
+  "Don Orione",
+  "Cooperativa",
+  "Barrio UNAM",
+  "Barrio IPRODHA",
+  "Remanso",
+  "El Mirador",
+  "Otros / periferia",
+] as const;

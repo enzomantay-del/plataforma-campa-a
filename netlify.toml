@@ -1,0 +1,12 @@
+# Plataforma de campaña — deploy en Netlify
+# Guía completa: DESPLIEGUE-NETLIFY.md
+
+[build]
+  command = "npm run build:netlify"
+
+[build.environment]
+  NODE_VERSION = "20"
+  NPM_FLAGS = "--legacy-peer-deps"
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"

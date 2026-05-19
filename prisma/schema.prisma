@@ -1,0 +1,99 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-3.0.x"]
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model Barrio {
+  id        String     @id @default(cuid())
+  nombre    String     @unique
+  orden     Int        @default(0)
+  activo    Boolean    @default(true)
+  contactos Contacto[]
+}
+
+model Referente {
+  id        String     @id @default(cuid())
+  nombre    String
+  activo    Boolean    @default(true)
+  creadoEn  DateTime   @default(now())
+  contactos Contacto[]
+}
+
+model Contacto {
+  id              String   @id @default(cuid())
+  nombre          String
+  apellido        String
+  telefono        String
+  telefonoClave10 String   @unique
+  barrioId        String
+  barrio          Barrio   @relation(fields: [barrioId], references: [id])
+  referenteId     String?
+  referente       Referente? @relation(fields: [referenteId], references: [id], onDelete: SetNull)
+  notas           String?  @default("")
+  creadoEn        DateTime @default(now())
+  actualizadoEn   DateTime @updatedAt
+
+  mensajes MessageLog[]
+
+  @@index([barrioId])
+  @@index([referenteId])
+  @@index([telefono])
+}
+
+model Envio {
+  id           String   @id @default(cuid())
+  nombre       String
+  filtroBarrio String?
+  estado       String   @default("BORRADOR")
+  creadoEn     DateTime @default(now())
+  descripcion  String?  @default("")
+
+  mensajes MessageLog[]
+}
+
+model MessageLog {
+  id            String   @id @default(cuid())
+  envioId       String
+  envio         Envio    @relation(fields: [envioId], references: [id], onDelete: Cascade)
+  contactoId    String
+  contacto      Contacto @relation(fields: [contactoId], references: [id], onDelete: Cascade)
+  estado        String   @default("PENDIENTE")
+  detalle       String?  @default("")
+  waMessageId   String?
+  actualizadoEn DateTime @updatedAt
+
+  @@index([envioId])
+  @@index([contactoId])
+  @@index([waMessageId])
+  @@index([estado])
+}
+
+model Sondeo {
+  id        String   @id @default(cuid())
+  titulo    String
+  pregunta  String
+  activo    Boolean  @default(false)
+  creadoEn  DateTime @default(now())
+
+  respuestas SondeoRespuesta[]
+}
+
+model SondeoRespuesta {
+  id          String   @id @default(cuid())
+  sondeoId    String
+  sondeo      Sondeo   @relation(fields: [sondeoId], references: [id], onDelete: Cascade)
+  telefono    String
+  contactoId  String?
+  texto       String
+  waMessageId String?
+  recibidoEn  DateTime @default(now())
+
+  @@index([sondeoId])
+  @@index([telefono])
+}
