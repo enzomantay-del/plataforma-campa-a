@@ -3,9 +3,24 @@ title Sembrar barrios via Netlify
 cd /d "%~dp0"
 
 set SITIO=https://sistema-municipal-directoalvecino.netlify.app
-set SECRETO=campana-seed-2026-interno
 
 echo.
+echo Leyendo SEED_SECRET del archivo .env ...
+echo.
+
+for /f "usebackq tokens=1,* delims==" %%a in (".env") do (
+  if /i "%%a"=="SEED_SECRET" set SECRETO=%%b
+)
+
+set SECRETO=%SECRETO:"=%
+
+if "%SECRETO%"=="" (
+  echo ERROR: no hay SEED_SECRET en .env
+  echo Agrega: SEED_SECRET=tu-frase-secreta
+  pause
+  exit /b 1
+)
+
 echo Llamando a %SITIO%/api/admin/seed ...
 echo.
 
@@ -14,13 +29,8 @@ powershell -NoProfile -Command ^
 
 echo.
 if errorlevel 1 (
-  echo.
-  echo Revisa en Netlify:
-  echo   - SEED_SECRET = campana-seed-2026-interno
-  echo   - DATABASE_URL y DIRECT_URL con neon.tech
-  echo   - Ultimo deploy en VERDE
+  echo Revisa SEED_SECRET en Netlify ^(.env local debe coincidir^)
 ) else (
-  echo.
   echo LISTO. Entra al panel y carga Referentes.
 )
 echo.

@@ -17,10 +17,7 @@ export async function POST(req: Request) {
 
   const header = req.headers.get("x-seed-secret");
   if (header !== secret) {
-    return NextResponse.json(
-      { ok: false, error: "Secreto incorrecto. En Netlify: SEED_SECRET = campana-seed-2026-interno" },
-      { status: 403 },
-    );
+    return NextResponse.json({ ok: false, error: "Secreto incorrecto." }, { status: 403 });
   }
 
   try {
