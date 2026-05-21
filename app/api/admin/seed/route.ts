@@ -5,18 +5,26 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-/** Crea tablas + carga barrios. Header: x-seed-secret = SEED_SECRET en Netlify. */
+function secretoValido(header: string | null): boolean {
+  const h = header?.trim() ?? "";
+  if (!h) return false;
+  const permitidos = [process.env.SEED_SECRET?.trim(), process.env.PANEL_PASSWORD?.trim()].filter(
+    Boolean,
+  ) as string[];
+  return permitidos.some((s) => s === h);
+}
+
+/** Crea tablas + carga barrios. Header x-seed-secret = SEED_SECRET o PANEL_PASSWORD de Netlify. */
 export async function POST(req: Request) {
-  const secret = process.env.SEED_SECRET?.trim();
-  if (!secret) {
+  if (!process.env.SEED_SECRET?.trim() && !process.env.PANEL_PASSWORD?.trim()) {
     return NextResponse.json(
-      { ok: false, error: "SEED_SECRET no configurado en Netlify." },
+      { ok: false, error: "Configurá SEED_SECRET o PANEL_PASSWORD en Netlify." },
       { status: 503 },
     );
   }
 
   const header = req.headers.get("x-seed-secret");
-  if (header !== secret) {
+  if (!secretoValido(header)) {
     return NextResponse.json({ ok: false, error: "Secreto incorrecto." }, { status: 403 });
   }
 
