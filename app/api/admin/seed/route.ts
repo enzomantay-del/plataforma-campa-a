@@ -5,6 +5,21 @@ import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
+async function withDbRetry<T>(fn: () => Promise<T>, retries = 4): Promise<T> {
+  let last: unknown;
+  for (let i = 0; i < retries; i++) {
+    try {
+      return await fn();
+    } catch (e) {
+      last = e;
+      const msg = e instanceof Error ? e.message : String(e);
+      if (!msg.includes("Can't reach database") && !msg.includes("P1001")) throw e;
+      await new Promise((r) => setTimeout(r, 2500));
+    }
+  }
+  throw last;
+}
+
 function secretoValido(header: string | null): boolean {
   const h = header?.trim() ?? "";
   if (!h) return false;
@@ -29,7 +44,9 @@ export async function POST(req: Request) {
   }
 
   try {
-    await ensureDbSchema();
+    await withDbRetry(async () => {
+      await ensureDbSchema();
+    });
 
     for (let i = 0; i < BARRIOS_JARDIN_AMERICA.length; i++) {
       const nombre = BARRIOS_JARDIN_AMERICA[i];
