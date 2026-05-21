@@ -1,10 +1,11 @@
 import { BARRIOS_JARDIN_AMERICA } from "@/lib/barrios-default";
+import { ensureDbSchema } from "@/lib/ensure-db-schema";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
 
 export const runtime = "nodejs";
 
-/** Carga barrios iniciales (tablas se crean en el build de Netlify). */
+/** Crea tablas + carga barrios. Header: x-seed-secret = SEED_SECRET en Netlify. */
 export async function POST(req: Request) {
   const secret = process.env.SEED_SECRET?.trim();
   if (!secret) {
@@ -23,6 +24,8 @@ export async function POST(req: Request) {
   }
 
   try {
+    await ensureDbSchema();
+
     for (let i = 0; i < BARRIOS_JARDIN_AMERICA.length; i++) {
       const nombre = BARRIOS_JARDIN_AMERICA[i];
       await prisma.barrio.upsert({
@@ -36,17 +39,10 @@ export async function POST(req: Request) {
     return NextResponse.json({
       ok: true,
       barrios: total,
-      mensaje: "Barrios cargados. Agregá referentes desde el panel.",
+      mensaje: "Tablas y barrios listos. Agregá referentes desde el panel.",
     });
   } catch (e) {
     const msg = e instanceof Error ? e.message : "Error desconocido";
-    return NextResponse.json(
-      {
-        ok: false,
-        error: msg,
-        ayuda: "Si dice que no existe la tabla Barrio, esperá el redeploy de Netlify y probá de nuevo.",
-      },
-      { status: 500 },
-    );
+    return NextResponse.json({ ok: false, error: msg }, { status: 500 });
   }
 }
