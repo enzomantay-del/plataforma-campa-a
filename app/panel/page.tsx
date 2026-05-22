@@ -1,5 +1,6 @@
 import { ResumenMetricas } from "@/components/panel/ResumenMetricas";
 import { StatCard } from "@/components/panel/StatCard";
+import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { resumenGlobalMensajes } from "@/lib/metricas";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -12,7 +13,7 @@ export default async function PanelInicioPage() {
       prisma.referente.count({ where: { activo: true } }),
       prisma.barrio.findMany({
         where: { activo: true },
-        orderBy: { orden: "asc" },
+        orderBy: BARRIOS_ORDER_BY,
         include: { _count: { select: { contactos: true } } },
       }),
       resumenGlobalMensajes(),

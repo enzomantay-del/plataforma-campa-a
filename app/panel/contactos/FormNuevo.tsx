@@ -1,5 +1,6 @@
 "use client";
 
+import { LinkMapaBarrios } from "@/components/LinkMapaBarrios";
 import { useRef, useState } from "react";
 import { crearContacto } from "./actions";
 
@@ -67,6 +68,7 @@ export function FormNuevoContacto({ barrios }: { barrios: Barrio[] }) {
             </option>
           ))}
         </select>
+        <LinkMapaBarrios compacto />
       </label>
       <label className="block text-sm sm:col-span-2">
         <span className="text-slate-600">Notas (opcional)</span>

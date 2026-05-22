@@ -3,6 +3,7 @@ import {
   getDefaultTemplateName,
   isWhatsAppConfigured,
 } from "@/lib/whatsapp-config";
+import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { FormEnvioWhatsApp } from "./FormEnvioWhatsApp";
@@ -19,7 +20,7 @@ function badgeEnvio(estado: string) {
 export default async function EnviosPage() {
   const barrios = await prisma.barrio.findMany({
     where: { activo: true },
-    orderBy: { orden: "asc" },
+    orderBy: BARRIOS_ORDER_BY,
     select: { nombre: true },
   });
 

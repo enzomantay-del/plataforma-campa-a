@@ -1,10 +1,12 @@
+import { LinkMapaBarrios } from "@/components/LinkMapaBarrios";
+import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { prisma } from "@/lib/prisma";
 import { BotonesBarrio } from "./BotonesBarrio";
 import { crearBarrio } from "./actions";
 
 export default async function BarriosPage() {
   const barrios = await prisma.barrio.findMany({
-    orderBy: [{ orden: "asc" }, { nombre: "asc" }],
+    orderBy: BARRIOS_ORDER_BY,
     include: { _count: { select: { contactos: true } } },
   });
 
@@ -13,8 +15,10 @@ export default async function BarriosPage() {
       <div>
         <h2 className="text-2xl font-bold text-campana-azul">Barrios</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Lista territorial para contactos y formulario público. Los inactivos no aparecen al cargar datos.
+          Lista territorial para contactos y formulario público. Los inactivos no aparecen al cargar datos. Las listas
+          se ordenan alfabéticamente.
         </p>
+        <LinkMapaBarrios className="mt-2 text-sm text-slate-600" compacto />
       </div>
 
       <form

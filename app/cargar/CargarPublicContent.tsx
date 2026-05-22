@@ -1,4 +1,5 @@
 import { FormCargaPublica } from "@/app/cargar/FormCargaPublica";
+import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { buildPublicCargaApiQuery } from "@/lib/carga-public-url";
 import { ensureBarriosCargados } from "@/lib/ensure-barrios";
 import { getPublicCargaKey, isPublicCargaKeyValid } from "@/lib/public-carga";
@@ -21,7 +22,7 @@ export async function CargarPublicContent({ claveProvista }: { claveProvista?: s
   await ensureBarriosCargados();
 
   const [barrios, referentes] = await Promise.all([
-    prisma.barrio.findMany({ where: { activo: true }, orderBy: { orden: "asc" } }),
+    prisma.barrio.findMany({ where: { activo: true }, orderBy: BARRIOS_ORDER_BY }),
     prisma.referente.findMany({ where: { activo: true }, orderBy: { nombre: "asc" } }),
   ]);
 

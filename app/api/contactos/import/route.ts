@@ -1,4 +1,5 @@
 import { crearContactoConDedupe } from "@/lib/contacto-create";
+import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { ensureBarriosCargados } from "@/lib/ensure-barrios";
 import { prisma } from "@/lib/prisma";
 import { NextResponse } from "next/server";
@@ -17,7 +18,7 @@ export async function POST(req: Request) {
     let duplicados = 0;
     const errores: string[] = [];
 
-    const barrios = await prisma.barrio.findMany();
+    const barrios = await prisma.barrio.findMany({ orderBy: BARRIOS_ORDER_BY });
     const barrioPorNombre = new Map(barrios.map((b) => [b.nombre.toLowerCase(), b.id]));
 
     for (let i = 0; i < lineas.length; i++) {

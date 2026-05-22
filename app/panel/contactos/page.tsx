@@ -1,3 +1,4 @@
+import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { ensureBarriosCargados } from "@/lib/ensure-barrios";
 import { prisma } from "@/lib/prisma";
 import { FormNuevoContacto } from "./FormNuevo";
@@ -14,7 +15,7 @@ export default async function ContactosPage() {
         referente: { select: { nombre: true } },
       },
     }),
-    prisma.barrio.findMany({ where: { activo: true }, orderBy: { orden: "asc" } }),
+    prisma.barrio.findMany({ where: { activo: true }, orderBy: BARRIOS_ORDER_BY }),
   ]);
 
   return (

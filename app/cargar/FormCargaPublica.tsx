@@ -1,5 +1,6 @@
 "use client";
 
+import { LinkMapaBarrios } from "@/components/LinkMapaBarrios";
 import { useState } from "react";
 
 type Barrio = { id: string; nombre: string };
@@ -139,6 +140,7 @@ export function FormCargaPublica({
             </option>
           ))}
         </select>
+        <LinkMapaBarrios className="mt-2 text-sm leading-relaxed text-slate-600" />
       </label>
 
       <label className="block text-sm">
