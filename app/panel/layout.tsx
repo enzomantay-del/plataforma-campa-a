@@ -1,4 +1,10 @@
 import { Sidebar } from "@/components/panel/Sidebar";
+import { MARCA, MARCA_PANEL } from "@/lib/branding";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: `${MARCA_PANEL.titulo} · ${MARCA.nombre}`,
+};
 
 export const dynamic = "force-dynamic";
 

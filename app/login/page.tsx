@@ -1,5 +1,6 @@
 "use client";
 
+import { MarcaMunicipal } from "@/components/MarcaMunicipal";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 
@@ -39,8 +40,8 @@ function LoginForm() {
         onSubmit={(e) => void ingresar(e)}
         className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 shadow-panel"
       >
-        <p className="text-xs font-semibold uppercase tracking-wider text-campana-rojo">Panel de campaña</p>
-        <h1 className="mt-2 text-2xl font-bold text-campana-azul">Ingresá al panel</h1>
+        <MarcaMunicipal className="mb-6" />
+        <h2 className="text-xl font-bold text-campana-azul">Ingresá al panel</h2>
         <p className="mt-2 text-sm text-slate-600">
           La contraseña está en el archivo <code className="rounded bg-slate-100 px-1">.env</code> como{" "}
           <code className="rounded bg-slate-100 px-1">PANEL_PASSWORD</code>. Si no la configuraste, el panel

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import { MARCA } from "@/lib/branding";
 import "./globals.css";
 
 const inter = Inter({
@@ -8,9 +9,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Plataforma de campaña · MVP",
-  description:
-    "Base territorial, envíos y panel operativo. Fase 1 — desarrollo local.",
+  title: `${MARCA.nombre} · ${MARCA.municipio}`,
+  description: `${MARCA.subtitulo}. ${MARCA.descripcion}`,
 };
 
 export default function RootLayout({

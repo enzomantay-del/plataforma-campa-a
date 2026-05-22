@@ -21,7 +21,7 @@ export default async function ContactosPage() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-8">
       <div>
-        <h2 className="text-2xl font-bold text-campana-azul">Contactos territoriales</h2>
+        <h2 className="text-2xl font-bold text-campana-azul">Contactos por barrio</h2>
         <p className="mt-1 text-sm text-slate-600">
           Base segmentada por barrio. Teléfonos normalizados; duplicados bloqueados por últimos 10 dígitos.
         </p>

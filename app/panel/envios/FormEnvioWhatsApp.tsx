@@ -163,7 +163,7 @@ export function FormEnvioWhatsApp({
             onChange={(e) => setNombre(e.target.value)}
             disabled={!whatsappListo || cargando}
             className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none ring-campana-azul-claro focus:ring-2 disabled:opacity-50"
-            placeholder="Ej. Cierre de campaña"
+            placeholder="Ej. Aviso bacheos San Martín"
           />
         </label>
         <label className="block text-sm">

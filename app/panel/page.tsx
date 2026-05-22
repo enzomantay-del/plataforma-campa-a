@@ -1,6 +1,7 @@
 import { ResumenMetricas } from "@/components/panel/ResumenMetricas";
 import { StatCard } from "@/components/panel/StatCard";
 import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
+import { MARCA, MARCA_PANEL } from "@/lib/branding";
 import { resumenGlobalMensajes } from "@/lib/metricas";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
@@ -22,12 +23,12 @@ export default async function PanelInicioPage() {
   return (
     <div className="mx-auto w-full max-w-7xl space-y-8">
       <header className="rounded-2xl bg-gradient-to-br from-campana-azul via-campana-azul-med to-campana-azul-claro p-8 text-white shadow-panel">
-        <p className="text-sm font-medium text-white/80">Panel operativo</p>
+        <p className="text-sm font-medium text-white/80">{MARCA.nombre} · {MARCA_PANEL.titulo}</p>
         <h2 className="mt-2 text-2xl font-bold tracking-tight sm:text-3xl">
-          Controlá la base y los envíos desde un solo lugar
+          {MARCA.subtitulo}
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-white/85">
-          Formulario público para referentes, envíos WhatsApp, métricas de entrega/lectura y ranking de cargas.
+          Formulario para referentes, avisos por WhatsApp, métricas de entrega y contactos por barrio.
         </p>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
@@ -60,7 +61,7 @@ export default async function PanelInicioPage() {
           subtitulo="Lotes WhatsApp o simulados"
           acento="rojo"
         />
-        <StatCard titulo="Barrios" valor={barriosConCount.length} subtitulo="Lista territorial" />
+        <StatCard titulo="Barrios" valor={barriosConCount.length} subtitulo="Por barrio" />
       </div>
 
       <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-panel">

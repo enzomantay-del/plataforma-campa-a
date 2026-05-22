@@ -1,10 +1,10 @@
 import type { Metadata, Viewport } from "next";
+import { MARCA } from "@/lib/branding";
 
 export const metadata: Metadata = {
-  title: "Cargar contacto · Campaña",
-  description: "Formulario para referentes barriales — cargá vecinos desde el celular.",
+  title: `Cargar contacto · ${MARCA.nombre}`,
+  description: `${MARCA.subtitulo} — formulario para referentes barriales.`,
 };
-
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,

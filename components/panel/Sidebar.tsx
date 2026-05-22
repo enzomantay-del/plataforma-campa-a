@@ -1,11 +1,12 @@
 import { BotonSalir } from "@/components/panel/BotonSalir";
+import { MarcaMunicipal } from "@/components/MarcaMunicipal";
 import { isPanelAuthRequired } from "@/lib/panel-auth";
 import Link from "next/link";
 
 const items = [
   { href: "/panel", label: "Inicio", icon: "📊", desc: "Resumen" },
   { href: "/panel/carga-publica", label: "Carga pública", icon: "🔗", desc: "Link referentes" },
-  { href: "/panel/barrios", label: "Barrios", icon: "🏘️", desc: "Lista territorial" },
+  { href: "/panel/barrios", label: "Barrios", icon: "🏘️", desc: "Por barrio" },
   { href: "/panel/referentes", label: "Referentes", icon: "🙋", desc: "Quién carga" },
   { href: "/panel/mensajes", label: "Mensajes", icon: "✉️", desc: "Diseño WhatsApp" },
   { href: "/panel/contactos", label: "Contactos", icon: "👥", desc: "Base por barrio" },
@@ -21,8 +22,7 @@ export function Sidebar() {
   return (
     <aside className="flex w-full flex-col border-b border-slate-200/80 bg-white shadow-panel lg:h-screen lg:min-h-screen lg:sticky lg:top-0 lg:border-b-0 lg:border-r lg:w-64 lg:shrink-0">
       <div className="border-b border-slate-100 px-5 py-6">
-        <p className="text-xs font-semibold uppercase tracking-wider text-campana-rojo">Plataforma de campaña</p>
-        <h1 className="mt-1 text-lg font-bold leading-tight text-campana-azul">Panel operativo</h1>
+        <MarcaMunicipal compacto />
       </div>
       <nav className="flex flex-1 flex-col gap-1 overflow-y-auto p-3">
         {items.map((item) => (

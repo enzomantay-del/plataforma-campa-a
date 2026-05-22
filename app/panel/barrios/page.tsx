@@ -15,7 +15,7 @@ export default async function BarriosPage() {
       <div>
         <h2 className="text-2xl font-bold text-campana-azul">Barrios</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Lista territorial para contactos y formulario público. Los inactivos no aparecen al cargar datos. Las listas
+          Lista de barrios para contactos y formulario público. Los inactivos no aparecen al cargar datos. Las listas
           se ordenan alfabéticamente.
         </p>
         <LinkMapaBarrios className="mt-2 text-sm text-slate-600" compacto />

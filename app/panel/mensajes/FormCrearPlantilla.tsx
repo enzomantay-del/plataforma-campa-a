@@ -6,7 +6,7 @@ import { crearPlantilla } from "./actions";
 
 export function FormCrearPlantilla() {
   const [cuerpo, setCuerpo] = useState(
-    "Hola {{nombre}}, te contactamos desde la campaña de tu barrio {{barrio}}.",
+    "Hola {{nombre}}, te contactamos desde la municipalidad sobre novedades de tu barrio {{barrio}}.",
   );
   const [paramsPlantilla, setParamsPlantilla] = useState("{{nombre}}, {{barrio}}");
   const [guardando, setGuardando] = useState(false);
@@ -18,7 +18,7 @@ export function FormCrearPlantilla() {
       const fd = new FormData(e.currentTarget);
       await crearPlantilla(fd);
       e.currentTarget.reset();
-      setCuerpo("Hola {{nombre}}, te contactamos desde la campaña de tu barrio {{barrio}}.");
+      setCuerpo("Hola {{nombre}}, te contactamos desde la municipalidad sobre novedades de tu barrio {{barrio}}.");
       setParamsPlantilla("{{nombre}}, {{barrio}}");
     } finally {
       setGuardando(false);
