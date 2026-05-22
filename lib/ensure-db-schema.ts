@@ -94,4 +94,21 @@ export async function ensureDbSchema(): Promise<void> {
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "Contacto_barrioId_idx" ON "Contacto"("barrioId");`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "Contacto_referenteId_idx" ON "Contacto"("referenteId");`);
   await prisma.$executeRawUnsafe(`CREATE INDEX IF NOT EXISTS "Contacto_telefono_idx" ON "Contacto"("telefono");`);
+
+  await prisma.$executeRawUnsafe(`
+    CREATE TABLE IF NOT EXISTS "PlantillaMensaje" (
+      "id" TEXT NOT NULL,
+      "nombre" TEXT NOT NULL,
+      "nombreMeta" TEXT NOT NULL,
+      "idioma" TEXT NOT NULL DEFAULT 'es_AR',
+      "cuerpo" TEXT NOT NULL,
+      "paramsPlantilla" TEXT NOT NULL DEFAULT '',
+      "activa" BOOLEAN NOT NULL DEFAULT true,
+      "esDefault" BOOLEAN NOT NULL DEFAULT false,
+      "orden" INTEGER NOT NULL DEFAULT 0,
+      "creadoEn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      "actualizadoEn" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      CONSTRAINT "PlantillaMensaje_pkey" PRIMARY KEY ("id")
+    );
+  `);
 }

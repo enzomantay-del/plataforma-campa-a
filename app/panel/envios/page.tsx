@@ -23,6 +23,16 @@ export default async function EnviosPage() {
     select: { nombre: true },
   });
 
+  let plantillas: Awaited<ReturnType<typeof prisma.plantillaMensaje.findMany>> = [];
+  try {
+    plantillas = await prisma.plantillaMensaje.findMany({
+      where: { activa: true },
+      orderBy: [{ esDefault: "desc" }, { orden: "asc" }],
+    });
+  } catch {
+    plantillas = [];
+  }
+
   const envios = await prisma.envio.findMany({
     orderBy: { creadoEn: "desc" },
     include: { _count: { select: { mensajes: true } } },
@@ -43,6 +53,7 @@ export default async function EnviosPage() {
         whatsappListo={isWhatsAppConfigured()}
         plantillaDefault={getDefaultTemplateName()}
         idiomaDefault={getDefaultTemplateLanguage()}
+        plantillas={plantillas}
       />
 
       <FormSimularEnvio barrios={barrios.map((b) => b.nombre)} />

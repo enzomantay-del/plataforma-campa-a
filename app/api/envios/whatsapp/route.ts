@@ -1,3 +1,4 @@
+import { renderMensaje } from "@/lib/render-mensaje";
 import { prisma } from "@/lib/prisma";
 import { enviarPlantillaWhatsApp } from "@/lib/whatsapp-api";
 import {
@@ -41,7 +42,13 @@ export async function POST(req: Request) {
 
     const contactos = await prisma.contacto.findMany({
       where: filtro ? { barrio: { nombre: filtro } } : {},
-      select: { id: true, telefono: true, nombre: true, apellido: true },
+      select: {
+        id: true,
+        telefono: true,
+        nombre: true,
+        apellido: true,
+        barrio: { select: { nombre: true } },
+      },
     });
 
     if (contactos.length === 0) {
@@ -68,7 +75,7 @@ export async function POST(req: Request) {
       const params =
         bodyParameters && bodyParameters.length > 0
           ? bodyParameters.map((p) =>
-              p.replace(/\{\{nombre\}\}/gi, c.nombre).replace(/\{\{apellido\}\}/gi, c.apellido),
+              renderMensaje(p, { nombre: c.nombre, apellido: c.apellido, barrio: c.barrio.nombre }),
             )
           : undefined;
 

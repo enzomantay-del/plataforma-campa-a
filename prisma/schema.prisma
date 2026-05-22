@@ -97,3 +97,17 @@ model SondeoRespuesta {
   @@index([sondeoId])
   @@index([telefono])
 }
+
+model PlantillaMensaje {
+  id              String   @id @default(cuid())
+  nombre          String
+  nombreMeta      String
+  idioma          String   @default("es_AR")
+  cuerpo          String
+  paramsPlantilla String   @default("")
+  activa          Boolean  @default(true)
+  esDefault       Boolean  @default(false)
+  orden           Int      @default(0)
+  creadoEn        DateTime @default(now())
+  actualizadoEn   DateTime @updatedAt
+}

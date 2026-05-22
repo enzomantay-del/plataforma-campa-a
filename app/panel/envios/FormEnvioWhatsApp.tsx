@@ -2,23 +2,54 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { renderMensaje } from "@/lib/render-mensaje";
+
+type Plantilla = {
+  id: string;
+  nombre: string;
+  nombreMeta: string;
+  idioma: string;
+  cuerpo: string;
+  paramsPlantilla: string;
+  esDefault: boolean;
+};
 
 type Props = {
   barrios: string[];
   whatsappListo: boolean;
   plantillaDefault: string;
   idiomaDefault: string;
+  plantillas: Plantilla[];
 };
 
-export function FormEnvioWhatsApp({ barrios, whatsappListo, plantillaDefault, idiomaDefault }: Props) {
+export function FormEnvioWhatsApp({
+  barrios,
+  whatsappListo,
+  plantillaDefault,
+  idiomaDefault,
+  plantillas,
+}: Props) {
   const router = useRouter();
+  const defaultP = plantillas.find((p) => p.esDefault) ?? plantillas[0];
+  const [plantillaId, setPlantillaId] = useState(defaultP?.id ?? "");
   const [nombre, setNombre] = useState("");
   const [barrio, setBarrio] = useState("");
-  const [plantilla, setPlantilla] = useState(plantillaDefault);
-  const [idioma, setIdioma] = useState(idiomaDefault);
-  const [varsCuerpo, setVarsCuerpo] = useState("");
+  const [plantilla, setPlantilla] = useState(defaultP?.nombreMeta ?? plantillaDefault);
+  const [idioma, setIdioma] = useState(defaultP?.idioma ?? idiomaDefault);
+  const [varsCuerpo, setVarsCuerpo] = useState(defaultP?.paramsPlantilla ?? "");
+  const [cuerpoPreview, setCuerpoPreview] = useState(defaultP?.cuerpo ?? "");
   const [msg, setMsg] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+
+  function elegirPlantilla(id: string) {
+    setPlantillaId(id);
+    const p = plantillas.find((x) => x.id === id);
+    if (!p) return;
+    setPlantilla(p.nombreMeta);
+    setIdioma(p.idioma);
+    setVarsCuerpo(p.paramsPlantilla);
+    setCuerpoPreview(p.cuerpo);
+  }
 
   async function enviar() {
     setMsg(null);
@@ -62,14 +93,19 @@ export function FormEnvioWhatsApp({ barrios, whatsappListo, plantillaDefault, id
     }
   }
 
+  const preview = renderMensaje(cuerpoPreview, {
+    nombre: "María",
+    apellido: "González",
+    barrio: barrio || "Centro",
+  });
+
   return (
     <div className="rounded-2xl border border-campana-azul/20 bg-gradient-to-br from-white to-slate-50 p-6 shadow-panel">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
           <h3 className="font-bold text-campana-azul">Envío real · WhatsApp Cloud API</h3>
           <p className="mt-2 text-sm text-slate-600">
-            Usa una <strong>plantilla aprobada</strong> en tu cuenta de Meta. Costos y límites según tu
-            contrato con Meta.
+            Elegí una plantilla diseñada en <strong>Mensajes</strong>. Debe estar aprobada en Meta.
           </p>
         </div>
         <span
@@ -85,11 +121,38 @@ export function FormEnvioWhatsApp({ barrios, whatsappListo, plantillaDefault, id
 
       {!whatsappListo ? (
         <p className="mt-4 rounded-xl bg-amber-50 p-4 text-sm text-amber-950">
-          Cargá en <code className="rounded bg-amber-100/80 px-1">.env</code> al menos{" "}
-          <code className="rounded bg-amber-100/80 px-1">WHATSAPP_ACCESS_TOKEN</code> y{" "}
-          <code className="rounded bg-amber-100/80 px-1">WHATSAPP_PHONE_NUMBER_ID</code>. Mirá la guía en{" "}
-          <strong>Configuración</strong>.
+          Configurá WhatsApp en <strong>Configuración</strong> o variables en Netlify.
         </p>
+      ) : null}
+
+      {plantillas.length > 0 ? (
+        <label className="mt-4 block text-sm">
+          <span className="text-slate-600">Plantilla guardada</span>
+          <select
+            value={plantillaId}
+            onChange={(e) => elegirPlantilla(e.target.value)}
+            disabled={!whatsappListo || cargando}
+            className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-campana-azul-claro focus:ring-2 disabled:opacity-50"
+          >
+            {plantillas.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.nombre}
+                {p.esDefault ? " (predeterminada)" : ""}
+              </option>
+            ))}
+          </select>
+        </label>
+      ) : (
+        <p className="mt-4 rounded-xl bg-slate-50 p-3 text-sm text-slate-600">
+          Creá plantillas en <strong>Mensajes</strong> para precargar el diseño acá.
+        </p>
+      )}
+
+      {cuerpoPreview ? (
+        <div className="mt-4 rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-800">
+          <p className="text-xs font-semibold uppercase text-slate-500">Vista previa</p>
+          <p className="mt-2 whitespace-pre-wrap">{preview}</p>
+        </div>
       ) : null}
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
@@ -123,15 +186,13 @@ export function FormEnvioWhatsApp({ barrios, whatsappListo, plantillaDefault, id
           />
         </label>
         <label className="block text-sm sm:col-span-2">
-          <span className="text-slate-600">
-            Variables del cuerpo (opcional, separadas por comas — mismo orden que en la plantilla Meta)
-          </span>
+          <span className="text-slate-600">Variables del cuerpo (separadas por comas)</span>
           <input
             value={varsCuerpo}
             onChange={(e) => setVarsCuerpo(e.target.value)}
             disabled={!whatsappListo || cargando}
             className="mt-1 w-full rounded-xl border border-slate-200 px-3 py-2 text-sm outline-none ring-campana-azul-claro focus:ring-2 disabled:opacity-50"
-            placeholder='Vacío para plantillas sin variables (ej. hello_world). Ej: "Ana", "Centro"'
+            placeholder="{{nombre}}, {{barrio}}"
           />
         </label>
         <label className="block text-sm sm:col-span-2">

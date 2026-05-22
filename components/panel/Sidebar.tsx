@@ -5,7 +5,9 @@ import Link from "next/link";
 const items = [
   { href: "/panel", label: "Inicio", icon: "📊", desc: "Resumen" },
   { href: "/panel/carga-publica", label: "Carga pública", icon: "🔗", desc: "Link referentes" },
+  { href: "/panel/barrios", label: "Barrios", icon: "🏘️", desc: "Lista territorial" },
   { href: "/panel/referentes", label: "Referentes", icon: "🙋", desc: "Quién carga" },
+  { href: "/panel/mensajes", label: "Mensajes", icon: "✉️", desc: "Diseño WhatsApp" },
   { href: "/panel/contactos", label: "Contactos", icon: "👥", desc: "Base por barrio" },
   { href: "/panel/envios", label: "Envíos", icon: "💬", desc: "WhatsApp" },
   { href: "/panel/metricas", label: "Métricas", icon: "📈", desc: "Recibidos / leídos" },
