@@ -107,6 +107,28 @@ export function CopiarEnlaceCarga({
           solo quien tenga el enlace pueda cargar.
         </p>
       ) : null}
+
+      {esPublicoInternet ? (
+        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-panel">
+          <h3 className="font-semibold text-campana-azul">Código QR para referentes</h3>
+          <p className="mt-1 text-sm text-slate-600">
+            Imprimí o compartí esta imagen. Al escanearla se abre el formulario de carga en el celular.
+          </p>
+          <div className="mt-4 flex flex-col items-center gap-4 sm:flex-row sm:items-start">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={`https://api.qrserver.com/v1/create-qr-code/?size=240x240&data=${encodeURIComponent(urlCompartir)}`}
+              alt="QR del formulario de carga"
+              width={240}
+              height={240}
+              className="rounded-xl border border-slate-200 bg-white p-2"
+            />
+            <p className="max-w-xs text-xs leading-relaxed text-slate-500">
+              Tip: guardá la imagen (clic derecho → guardar) y mandala por WhatsApp a los referentes de cada barrio.
+            </p>
+          </div>
+        </div>
+      ) : null}
     </div>
   );
 }

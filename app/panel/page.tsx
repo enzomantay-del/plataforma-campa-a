@@ -1,3 +1,4 @@
+import { CoberturaBarrios } from "@/components/panel/CoberturaBarrios";
 import { ResumenMetricas } from "@/components/panel/ResumenMetricas";
 import { StatCard } from "@/components/panel/StatCard";
 import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
@@ -75,24 +76,7 @@ export default async function PanelInicioPage() {
         </Link>
       </section>
 
-      <section className="rounded-2xl border border-slate-200/80 bg-white p-6 shadow-panel">
-        <h3 className="text-lg font-bold text-campana-azul">Contactos por barrio</h3>
-        {barriosConCount.length === 0 ? (
-          <p className="mt-4 text-sm text-slate-500">Sin barrios. Reiniciá el panel o ejecutá npm run db:seed.</p>
-        ) : (
-          <ul className="mt-4 grid gap-2 sm:grid-cols-2">
-            {barriosConCount.map((row) => (
-              <li
-                key={row.id}
-                className="flex items-center justify-between rounded-xl bg-slate-50 px-4 py-3 text-sm"
-              >
-                <span className="font-medium text-campana-azul">{row.nombre}</span>
-                <span className="tabular-nums font-semibold text-slate-700">{row._count.contactos}</span>
-              </li>
-            ))}
-          </ul>
-        )}
-      </section>
+      <CoberturaBarrios barrios={barriosConCount} />
     </div>
   );
 }

@@ -33,7 +33,11 @@ export async function CargarPublicContent({ claveProvista }: { claveProvista?: s
       <div className="mx-auto max-w-lg">
         <header className="mb-6">
           <MarcaMunicipal destacado className="mb-4" />
-          <h2 className="text-center text-xl font-bold text-campana-azul sm:text-2xl">Cargar vecino / contacto</h2>
+          <div className="rounded-xl border border-campana-azul/15 bg-campana-azul/5 px-4 py-3 text-center text-sm leading-relaxed text-slate-700">
+            Estás registrando vecinos para que la municipalidad les envíe avisos sobre obras, actividades y novedades
+            de su barrio por WhatsApp.
+          </div>
+          <h2 className="mt-4 text-center text-xl font-bold text-campana-azul sm:text-2xl">Cargar vecino / contacto</h2>
           <p className="mt-2 text-center text-sm leading-relaxed text-slate-600 sm:text-base">
             Completá los datos desde el celular. Si el teléfono ya está en la base, te avisamos y no se duplica.
           </p>

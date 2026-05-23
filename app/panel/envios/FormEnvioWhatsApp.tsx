@@ -1,7 +1,7 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { renderMensaje } from "@/lib/render-mensaje";
 
 type Plantilla = {
@@ -14,8 +14,16 @@ type Plantilla = {
   esDefault: boolean;
 };
 
+type ContactoOpcion = {
+  id: string;
+  nombre: string;
+  apellido: string;
+  barrio: string;
+};
+
 type Props = {
   barrios: string[];
+  contactos: ContactoOpcion[];
   whatsappListo: boolean;
   plantillaDefault: string;
   idiomaDefault: string;
@@ -24,6 +32,7 @@ type Props = {
 
 export function FormEnvioWhatsApp({
   barrios,
+  contactos,
   whatsappListo,
   plantillaDefault,
   idiomaDefault,
@@ -34,12 +43,20 @@ export function FormEnvioWhatsApp({
   const [plantillaId, setPlantillaId] = useState(defaultP?.id ?? "");
   const [nombre, setNombre] = useState("");
   const [barrio, setBarrio] = useState("");
+  const [contactoId, setContactoId] = useState("");
   const [plantilla, setPlantilla] = useState(defaultP?.nombreMeta ?? plantillaDefault);
   const [idioma, setIdioma] = useState(defaultP?.idioma ?? idiomaDefault);
   const [varsCuerpo, setVarsCuerpo] = useState(defaultP?.paramsPlantilla ?? "");
   const [cuerpoPreview, setCuerpoPreview] = useState(defaultP?.cuerpo ?? "");
   const [msg, setMsg] = useState<string | null>(null);
   const [cargando, setCargando] = useState(false);
+
+  const contactosFiltrados = useMemo(() => {
+    if (!barrio.trim()) return contactos;
+    return contactos.filter((c) => c.barrio === barrio);
+  }, [contactos, barrio]);
+
+  const contactoElegido = contactos.find((c) => c.id === contactoId);
 
   function elegirPlantilla(id: string) {
     setPlantillaId(id);
@@ -66,7 +83,8 @@ export function FormEnvioWhatsApp({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           nombre: nombre.trim() || undefined,
-          filtroBarrio: barrio.trim() || null,
+          filtroBarrio: contactoId ? null : barrio.trim() || null,
+          contactoId: contactoId || null,
           templateName: plantilla.trim() || undefined,
           languageCode: idioma.trim() || undefined,
           bodyParams,
@@ -94,9 +112,9 @@ export function FormEnvioWhatsApp({
   }
 
   const preview = renderMensaje(cuerpoPreview, {
-    nombre: "María",
-    apellido: "González",
-    barrio: barrio || "Centro",
+    nombre: contactoElegido?.nombre ?? "María",
+    apellido: contactoElegido?.apellido ?? "González",
+    barrio: contactoElegido?.barrio ?? (barrio || "Centro"),
   });
 
   return (
@@ -196,11 +214,33 @@ export function FormEnvioWhatsApp({
           />
         </label>
         <label className="block text-sm sm:col-span-2">
+          <span className="text-slate-600">Modo prueba: un solo contacto (opcional)</span>
+          <select
+            value={contactoId}
+            onChange={(e) => setContactoId(e.target.value)}
+            disabled={!whatsappListo || cargando}
+            className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-campana-azul-claro focus:ring-2 disabled:opacity-50"
+          >
+            <option value="">Enviar a todos (según barrio abajo)</option>
+            {contactosFiltrados.map((c) => (
+              <option key={c.id} value={c.id}>
+                {c.nombre} {c.apellido} · {c.barrio}
+              </option>
+            ))}
+          </select>
+          <p className="mt-1 text-xs text-slate-500">
+            Elegí una persona para probar antes de mandar a todo un barrio.
+          </p>
+        </label>
+        <label className="block text-sm sm:col-span-2">
           <span className="text-slate-600">Solo barrio (vacío = todos los contactos)</span>
           <select
             value={barrio}
-            onChange={(e) => setBarrio(e.target.value)}
-            disabled={!whatsappListo || cargando}
+            onChange={(e) => {
+              setBarrio(e.target.value);
+              setContactoId("");
+            }}
+            disabled={!whatsappListo || cargando || Boolean(contactoId)}
             className="mt-1 w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm outline-none ring-campana-azul-claro focus:ring-2 disabled:opacity-50"
           >
             <option value="">Todos</option>

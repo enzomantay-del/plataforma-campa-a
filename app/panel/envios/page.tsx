@@ -34,6 +34,16 @@ export default async function EnviosPage() {
     plantillas = [];
   }
 
+  const contactos = await prisma.contacto.findMany({
+    orderBy: [{ barrio: BARRIOS_ORDER_BY }, { apellido: "asc" }, { nombre: "asc" }],
+    select: {
+      id: true,
+      nombre: true,
+      apellido: true,
+      barrio: { select: { nombre: true } },
+    },
+  });
+
   const envios = await prisma.envio.findMany({
     orderBy: { creadoEn: "desc" },
     include: { _count: { select: { mensajes: true } } },
@@ -51,6 +61,12 @@ export default async function EnviosPage() {
 
       <FormEnvioWhatsApp
         barrios={barrios.map((b) => b.nombre)}
+        contactos={contactos.map((c) => ({
+          id: c.id,
+          nombre: c.nombre,
+          apellido: c.apellido,
+          barrio: c.barrio.nombre,
+        }))}
         whatsappListo={isWhatsAppConfigured()}
         plantillaDefault={getDefaultTemplateName()}
         idiomaDefault={getDefaultTemplateLanguage()}

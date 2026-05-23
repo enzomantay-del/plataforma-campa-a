@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { renderMensaje } from "@/lib/render-mensaje";
-import { editarPlantillaCuerpo, eliminarPlantilla, marcarDefaultPlantilla, togglePlantilla } from "./actions";
+import { EditarPlantillaForm } from "./EditarPlantillaForm";
+import { eliminarPlantilla, marcarDefaultPlantilla, togglePlantilla } from "./actions";
 
 type Plantilla = {
   id: string;
@@ -15,6 +17,8 @@ type Plantilla = {
 };
 
 export function ListaPlantillas({ plantillas }: { plantillas: Plantilla[] }) {
+  const [editandoId, setEditandoId] = useState<string | null>(null);
+
   if (plantillas.length === 0) {
     return (
       <p className="px-5 py-8 text-center text-sm text-slate-500">
@@ -61,13 +65,10 @@ export function ListaPlantillas({ plantillas }: { plantillas: Plantilla[] }) {
                 ) : null}
                 <button
                   type="button"
-                  onClick={() => {
-                    const nuevo = prompt("Editar texto del mensaje:", p.cuerpo);
-                    if (nuevo?.trim()) void editarPlantillaCuerpo(p.id, nuevo.trim());
-                  }}
+                  onClick={() => setEditandoId(editandoId === p.id ? null : p.id)}
                   className="rounded-lg border border-slate-200 px-3 py-1.5 text-xs font-medium"
                 >
-                  Editar texto
+                  {editandoId === p.id ? "Cerrar" : "Editar"}
                 </button>
                 <button
                   type="button"
@@ -87,6 +88,9 @@ export function ListaPlantillas({ plantillas }: { plantillas: Plantilla[] }) {
                 </button>
               </div>
             </div>
+            {editandoId === p.id ? (
+              <EditarPlantillaForm plantilla={p} onCerrar={() => setEditandoId(null)} />
+            ) : null}
           </li>
         );
       })}

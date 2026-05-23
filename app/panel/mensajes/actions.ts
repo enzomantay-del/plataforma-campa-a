@@ -60,3 +60,25 @@ export async function editarPlantillaCuerpo(id: string, cuerpo: string) {
   await prisma.plantillaMensaje.update({ where: { id }, data: { cuerpo: texto } });
   revalidar();
 }
+
+export async function editarPlantilla(id: string, formData: FormData) {
+  const nombre = String(formData.get("nombre") ?? "").trim();
+  const nombreMeta = String(formData.get("nombreMeta") ?? "").trim();
+  const idioma = String(formData.get("idioma") ?? "es_AR").trim();
+  const cuerpo = String(formData.get("cuerpo") ?? "").trim();
+  const paramsPlantilla = String(formData.get("paramsPlantilla") ?? "").trim();
+
+  if (!nombre || !nombreMeta || !cuerpo) return;
+
+  await prisma.plantillaMensaje.update({
+    where: { id },
+    data: {
+      nombre,
+      nombreMeta,
+      idioma: idioma || "es_AR",
+      cuerpo,
+      paramsPlantilla,
+    },
+  });
+  revalidar();
+}

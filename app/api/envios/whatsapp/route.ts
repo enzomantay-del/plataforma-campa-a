@@ -25,6 +25,7 @@ export async function POST(req: Request) {
     const body = (await req.json()) as {
       nombre?: string;
       filtroBarrio?: string | null;
+      contactoId?: string | null;
       templateName?: string;
       languageCode?: string;
       /** Textos para variables del cuerpo, en orden ({{1}}, {{2}}, …). */
@@ -33,6 +34,7 @@ export async function POST(req: Request) {
 
     const nombre = String(body.nombre ?? "").trim() || `WhatsApp ${new Date().toLocaleString("es-AR")}`;
     const filtro = body.filtroBarrio?.trim() || null;
+    const contactoId = body.contactoId?.trim() || null;
     const templateName = (body.templateName || getDefaultTemplateName()).trim();
     const languageCode = (body.languageCode || getDefaultTemplateLanguage()).trim();
     let bodyParameters: string[] | undefined;
@@ -40,20 +42,38 @@ export async function POST(req: Request) {
       bodyParameters = body.bodyParams.map(String);
     }
 
-    const contactos = await prisma.contacto.findMany({
-      where: filtro ? { barrio: { nombre: filtro } } : {},
-      select: {
-        id: true,
-        telefono: true,
-        nombre: true,
-        apellido: true,
-        barrio: { select: { nombre: true } },
-      },
-    });
+    const contactos = contactoId
+      ? await prisma.contacto.findMany({
+          where: { id: contactoId },
+          select: {
+            id: true,
+            telefono: true,
+            nombre: true,
+            apellido: true,
+            barrio: { select: { nombre: true } },
+          },
+        })
+      : await prisma.contacto.findMany({
+          where: filtro ? { barrio: { nombre: filtro } } : {},
+          select: {
+            id: true,
+            telefono: true,
+            nombre: true,
+            apellido: true,
+            barrio: { select: { nombre: true } },
+          },
+        });
 
     if (contactos.length === 0) {
       return NextResponse.json(
-        { ok: false, error: filtro ? `No hay contactos en «${filtro}».` : "No hay contactos." },
+        {
+          ok: false,
+          error: contactoId
+            ? "Contacto no encontrado."
+            : filtro
+              ? `No hay contactos en «${filtro}».`
+              : "No hay contactos.",
+        },
         { status: 400 },
       );
     }
@@ -61,9 +81,11 @@ export async function POST(req: Request) {
     const envio = await prisma.envio.create({
       data: {
         nombre,
-        filtroBarrio: filtro,
+        filtroBarrio: contactoId ? contactos[0].barrio.nombre : filtro,
         estado: "ENVIANDO",
-        descripcion: `Plantilla «${templateName}» (${languageCode})`,
+        descripcion: contactoId
+          ? `Plantilla «${templateName}» (${languageCode}) · prueba 1 contacto`
+          : `Plantilla «${templateName}» (${languageCode})`,
       },
     });
 

@@ -1,31 +1,49 @@
 import { BARRIOS_ORDER_BY } from "@/lib/barrios-list";
 import { ensureBarriosCargados } from "@/lib/ensure-barrios";
 import { prisma } from "@/lib/prisma";
+import { Suspense } from "react";
+import { BotonesContacto } from "./BotonesContacto";
+import { FiltroExportarContactos } from "./FiltroExportarContactos";
 import { FormNuevoContacto } from "./FormNuevo";
-import { BotonEliminar } from "./BotonEliminar";
 import { ImportarBloque } from "./ImportarBloque";
 
-export default async function ContactosPage() {
+export default async function ContactosPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ barrio?: string }>;
+}) {
   await ensureBarriosCargados();
-  const [rows, barrios] = await Promise.all([
-    prisma.contacto.findMany({
-      orderBy: { creadoEn: "desc" },
-      include: {
-        barrio: { select: { nombre: true } },
-        referente: { select: { nombre: true } },
-      },
-    }),
-    prisma.barrio.findMany({ where: { activo: true }, orderBy: BARRIOS_ORDER_BY }),
-  ]);
+  const { barrio: barrioFiltro } = await searchParams;
+
+  const barrios = await prisma.barrio.findMany({
+    where: { activo: true },
+    orderBy: BARRIOS_ORDER_BY,
+  });
+
+  const barrioValido =
+    barrioFiltro && barrios.some((b) => b.id === barrioFiltro) ? barrioFiltro : null;
+
+  const rows = await prisma.contacto.findMany({
+    where: barrioValido ? { barrioId: barrioValido } : {},
+    orderBy: { creadoEn: "desc" },
+    include: {
+      barrio: { select: { nombre: true } },
+      referente: { select: { nombre: true } },
+    },
+  });
 
   return (
     <div className="mx-auto w-full max-w-7xl space-y-8">
       <div>
         <h2 className="text-2xl font-bold text-campana-azul">Contactos por barrio</h2>
         <p className="mt-1 text-sm text-slate-600">
-          Base segmentada por barrio. Teléfonos normalizados; duplicados bloqueados por últimos 10 dígitos.
+          Base segmentada por barrio. Filtrá, exportá a CSV o editá contactos desde el listado.
         </p>
       </div>
+
+      <Suspense fallback={null}>
+        <FiltroExportarContactos barrios={barrios} barrioActual={barrioValido} total={rows.length} />
+      </Suspense>
 
       <FormNuevoContacto barrios={barrios} />
       <ImportarBloque barrios={barrios} />
@@ -50,7 +68,8 @@ export default async function ContactosPage() {
               {rows.length === 0 ? (
                 <tr>
                   <td colSpan={6} className="px-4 py-8 text-center text-slate-500">
-                    No hay contactos. Usá el formulario público, el alta rápida o importá.
+                    No hay contactos{barrioValido ? " en este barrio" : ""}. Usá el formulario público, el alta
+                    rápida o importá.
                   </td>
                 </tr>
               ) : (
@@ -68,7 +87,17 @@ export default async function ContactosPage() {
                     <td className="px-4 py-3 text-xs text-slate-600">{c.referente?.nombre ?? "—"}</td>
                     <td className="max-w-[160px] truncate px-4 py-3 text-slate-600">{c.notas || "—"}</td>
                     <td className="px-4 py-3 text-right">
-                      <BotonEliminar id={c.id} />
+                      <BotonesContacto
+                        contacto={{
+                          id: c.id,
+                          nombre: c.nombre,
+                          apellido: c.apellido,
+                          telefono: c.telefono,
+                          barrioId: c.barrioId,
+                          notas: c.notas,
+                        }}
+                        barrios={barrios}
+                      />
                     </td>
                   </tr>
                 ))
