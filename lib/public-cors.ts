@@ -5,25 +5,35 @@ const DEFAULT_ORIGINS = [
   "http://127.0.0.1:5500",
 ];
 
-function getAllowedOrigins(): string[] {
+function isAllowedOrigin(origin: string): boolean {
+  if (DEFAULT_ORIGINS.includes(origin)) return true;
+
   const fromEnv =
     process.env.PORTAL_MUNICIPAL_ORIGINS?.split(",")
       .map((s) => s.trim())
       .filter(Boolean) ?? [];
-  return [...new Set([...DEFAULT_ORIGINS, ...fromEnv])];
+  if (fromEnv.includes(origin)) return true;
+
+  try {
+    const url = new URL(origin);
+    if (url.protocol === "https:" && url.hostname.endsWith(".netlify.app")) return true;
+  } catch {
+    return false;
+  }
+
+  return false;
 }
 
 /** Cabeceras CORS para endpoints públicos consumidos desde el portal municipal. */
 export function publicCorsHeaders(request: Request): HeadersInit {
   const origin = request.headers.get("origin");
-  const allowed = getAllowedOrigins();
   const headers: Record<string, string> = {
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Access-Control-Allow-Headers": "Content-Type",
     "Access-Control-Max-Age": "86400",
   };
 
-  if (origin && allowed.includes(origin)) {
+  if (origin && isAllowedOrigin(origin)) {
     headers["Access-Control-Allow-Origin"] = origin;
     headers["Vary"] = "Origin";
   }
