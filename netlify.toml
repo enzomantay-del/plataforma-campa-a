@@ -7,6 +7,8 @@
 [build.environment]
   NODE_VERSION = "20"
   NPM_FLAGS = "--legacy-peer-deps"
+  # Nombre e idioma de plantilla Meta (no son secretos; pueden coincidir con .env.example).
+  SECRETS_SCAN_OMIT_KEYS = "WHATSAPP_AGENDA_TEMPLATE,WHATSAPP_AGENDA_TEMPLATE_LANG"
 
 [[plugins]]
   package = "@netlify/plugin-nextjs"
